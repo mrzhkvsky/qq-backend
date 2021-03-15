@@ -86,7 +86,6 @@ class User implements UserInterface
 
     public function setPassword(string $password): User
     {
-        Assert::lengthBetween($password, 6, 30);
         $this->password = $password;
 
         return $this;
