@@ -3,6 +3,6 @@ refresh_token:
     controller: gesdinet.jwtrefreshtoken::refresh
     methods: POST
 
-authentication:
-    path: /api/authentication
+login:
+    path: /api/login
     methods: POST
