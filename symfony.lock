@@ -32,6 +32,9 @@
     "doctrine/dbal": {
         "version": "2.12.1"
     },
+    "doctrine/deprecations": {
+        "version": "v0.5.3"
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.0",
         "recipe": {
@@ -89,6 +92,9 @@
     },
     "gesdinet/jwt-refresh-token-bundle": {
         "version": "v0.11.1"
+    },
+    "hashids/hashids": {
+        "version": "4.1.0"
     },
     "laminas/laminas-code": {
         "version": "4.0.0"

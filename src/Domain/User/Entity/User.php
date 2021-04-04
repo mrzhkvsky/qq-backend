@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Entity;
 
-use App\Application\UserSecurity;
+use App\Application\UserSecurityTrait;
 use App\Domain\User\Enum\GenderEnum;
 use App\Domain\User\Enum\RoleEnum;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,13 +16,14 @@ use Webmozart\Assert\Assert;
  */
 class User implements UserInterface
 {
-    use UserSecurity;
+    use UserSecurityTrait;
 
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
      */
-    private string $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string")
@@ -54,17 +55,16 @@ class User implements UserInterface
      */
     private RoleEnum $role;
 
-    public function __construct(string $id, string $email, string $firstName, string $lastName, GenderEnum $gender)
+    public function __construct(string $email, string $firstName, string $lastName, GenderEnum $gender)
     {
-        $this->setId($id)
-            ->setEmail($email)
+        $this->setEmail($email)
             ->setFirstName($firstName)
             ->setLastName($lastName)
             ->setGender($gender)
             ->setRole(RoleEnum::USER());
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }

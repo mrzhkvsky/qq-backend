@@ -6,3 +6,8 @@ refresh_token:
 login:
     path: /api/login
     methods: POST
+
+method:
+    path:       /api/method/{methodName}
+    controller: App\Application\ApiController::method
+    methods: [GET, POST]

@@ -27,7 +27,6 @@ class UserService
     public function createUser(CreateUserData $data): void
     {
         $user = new User(
-            $data->id,
             $data->email,
             $data->firstName,
             $data->lastName,

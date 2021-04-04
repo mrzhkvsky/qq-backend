@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\EventSubscriber;
 
-use App\Application\Response\BadRequestResponse;
-use App\Application\Response\UnauthorizedResponse;
+use App\Infrastructure\Rpc\Exception\RpcAuthenticationException;
+use App\Infrastructure\Rpc\Exception\RpcInternalErrorException;
+use App\Infrastructure\Rpc\Exception\RpcInvalidParamsException;
+use Gesdinet\JWTRefreshTokenBundle\Security\Authenticator\RefreshTokenAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTInvalidEvent;
@@ -27,41 +29,31 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
-        if ($event->getException() instanceof BadCredentialsException) {
-            $response = new BadRequestResponse(
-                'Bad credentials, please verify that your email/password are correctly set'
-            );
-        } else {
-            $response = new BadRequestResponse($event->getException()->getMessage());
+        $exception = $event->getException();
+
+        if ($exception instanceof BadCredentialsException) {
+            throw new RpcInvalidParamsException([]);
         }
 
-        $event->setResponse($response);
+        if ($exception->getTrace()[0]['class'] === RefreshTokenAuthenticator::class) {
+            throw new RpcInvalidParamsException([]);
+        }
+
+        throw new RpcInternalErrorException($exception);
     }
 
     public function onJWTInvalid(JWTInvalidEvent $event)
     {
-        $response = new UnauthorizedResponse(
-            'Your token is invalid, please login again to get a new one'
-        );
-
-        $event->setResponse($response);
+        throw new RpcAuthenticationException('Your token is invalid, please login again to get a new one');
     }
 
     public function onJWTNotFound(JWTNotFoundEvent $event)
     {
-        $response = new UnauthorizedResponse(
-            'Missing token'
-        );
-
-        $event->setResponse($response);
+        throw new RpcAuthenticationException('Missing token');
     }
 
     public function onJWTExpired(JWTExpiredEvent $event)
     {
-        $response = new UnauthorizedResponse(
-            'Your token is expired, please renew it.'
-        );
-
-        $event->setResponse($response);
+        throw new RpcAuthenticationException('Your token is expired, please renew it');
     }
 }

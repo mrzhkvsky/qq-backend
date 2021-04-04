@@ -45,14 +45,13 @@ class CreateUserCommand extends Command
         ]);
 
 
-        $email = $helper->ask($input, $output, new Question("Email:\n\r"));
-        $firstName = $helper->ask($input, $output, new Question("First name:\n\r"));
-        $lastName = $helper->ask($input, $output, new Question("Last name:\n\r"));
-        $password = $helper->ask($input, $output, new Question("Password:\n\r"));
-        $gender = $helper->ask($input, $output, new ChoiceQuestion("Gender:\n\r", array_values(GenderEnum::values())));
+        $email = $helper->ask($input, $output, new Question('Email:' . PHP_EOL));
+        $firstName = $helper->ask($input, $output, new Question('First name:' . PHP_EOL));
+        $lastName = $helper->ask($input, $output, new Question('Last name:' .PHP_EOL));
+        $password = $helper->ask($input, $output, new Question('Password:' . PHP_EOL));
+        $gender = $helper->ask($input, $output, new ChoiceQuestion('Gender:' . PHP_EOL, array_values(GenderEnum::values())));
 
         $this->userService->createUser(new CreateUserData(
-            Uuid::uuid4()->toString(),
             $email,
             $firstName,
             $lastName,

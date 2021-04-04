@@ -7,16 +7,14 @@ use App\Domain\User\Enum\GenderEnum;
 
 class CreateUserData
 {
-    public string $id;
     public string $email;
     public string $firstName;
     public string $lastName;
     public string $password;
     public GenderEnum $gender;
 
-    public function __construct(string $id, string $email, string $firstName, string $lastName, string $password, GenderEnum $gender)
+    public function __construct(string $email, string $firstName, string $lastName, string $password, GenderEnum $gender)
     {
-        $this->id = $id;
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;

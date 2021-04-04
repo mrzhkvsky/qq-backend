@@ -6,7 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -16,6 +16,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
         "gesdinet/jwt-refresh-token-bundle": "^0.11.1",
+        "hashids/hashids": "^4.1",
         "lexik/jwt-authentication-bundle": "^2.11",
         "myclabs/php-enum": "^1.8",
         "nelmio/cors-bundle": "^2.1",

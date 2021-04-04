@@ -2,6 +2,7 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         types:
+            enum: App\Infrastructure\Doctrine\Type\PhpEnumType
             gender_enum: App\Infrastructure\Doctrine\Type\GenderEnumType
             role_enum: App\Infrastructure\Doctrine\Type\RoleEnumType
 
