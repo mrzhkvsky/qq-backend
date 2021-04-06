@@ -4,19 +4,32 @@ declare(strict_types=1);
 namespace App\Application\EventSubscriber;
 
 use App\Infrastructure\Rpc\Exception\RpcAuthenticationException;
-use App\Infrastructure\Rpc\Exception\RpcInternalErrorException;
-use App\Infrastructure\Rpc\Exception\RpcInvalidParamsException;
-use Gesdinet\JWTRefreshTokenBundle\Security\Authenticator\RefreshTokenAuthenticator;
+use App\Infrastructure\Rpc\Exception\RpcInvalidRequestException;
+use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTInvalidEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTNotFoundEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class AuthenticationSubscriber implements EventSubscriberInterface
 {
+    private SerializerInterface $serializer;
 
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    #[ArrayShape([
+        'lexik_jwt_authentication.on_authentication_failure' => "string",
+        'lexik_jwt_authentication.on_jwt_invalid' => "string",
+        'lexik_jwt_authentication.on_jwt_not_found' => "string",
+        'lexik_jwt_authentication.on_jwt_expired' => "string"])
+    ]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -27,33 +40,48 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event)
+    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
-        $exception = $event->getException();
+        if ($event->getException() instanceof BadCredentialsException) {
+            $data = $this->serializer->serialize(
+                new RpcInvalidRequestException('Bad credentials'),
+                'json'
+            );
 
-        if ($exception instanceof BadCredentialsException) {
-            throw new RpcInvalidParamsException([]);
+            $event->setResponse(JsonResponse::fromJsonString($data));
         }
 
-        if ($exception->getTrace()[0]['class'] === RefreshTokenAuthenticator::class) {
-            throw new RpcInvalidParamsException([]);
-        }
-
-        throw new RpcInternalErrorException($exception);
+        throw $event->getException();
     }
 
-    public function onJWTInvalid(JWTInvalidEvent $event)
+    public function onJWTInvalid(JWTInvalidEvent $event): void
     {
-        throw new RpcAuthenticationException('Your token is invalid, please login again to get a new one');
+        $data = $this->serializer->serialize(
+            new RpcAuthenticationException('Your token is invalid, please login again to get a new one'),
+            'json'
+        );
+
+        $event->setResponse(JsonResponse::fromJsonString($data));
     }
 
-    public function onJWTNotFound(JWTNotFoundEvent $event)
+
+    public function onJWTNotFound(JWTNotFoundEvent $event): void
     {
-        throw new RpcAuthenticationException('Missing token');
+        $data = $this->serializer->serialize(
+            new RpcAuthenticationException('Missing token'),
+            'json'
+        );
+
+        $event->setResponse(JsonResponse::fromJsonString($data));
     }
 
-    public function onJWTExpired(JWTExpiredEvent $event)
+    public function onJWTExpired(JWTExpiredEvent $event): void
     {
-        throw new RpcAuthenticationException('Your token is expired, please renew it');
+        $data = $this->serializer->serialize(
+            new RpcAuthenticationException('Your token is expired, please renew it'),
+            'json'
+        );
+
+        $event->setResponse(JsonResponse::fromJsonString($data));
     }
 }

@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Rpc\Exception;
 
+use JetBrains\PhpStorm\Pure;
+
 class RpcMethodNotFoundException extends RpcException
 {
     private string $methodName;
 
+    #[Pure]
     public function __construct(string $methodName)
     {
         $this->methodName = $methodName;

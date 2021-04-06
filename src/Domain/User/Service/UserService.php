@@ -14,10 +14,6 @@ class UserService
     private PersistManager $pm;
     private UserPasswordEncoderInterface $passwordEncoder;
 
-    /**
-     * @param \App\Infrastructure\PersistManager $pm
-     * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder
-     */
     public function __construct(PersistManager $pm, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->pm = $pm;

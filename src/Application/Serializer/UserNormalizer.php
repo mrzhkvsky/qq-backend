@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Application\Normalizer;
+namespace App\Application\Serializer;
 
 use App\Domain\User\Entity\User;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -18,7 +18,7 @@ class UserNormalizer implements ContextAwareNormalizerInterface, CacheableSuppor
         $this->normalizer = $normalizer;
     }
 
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize(mixed $object, string $format = null, array $context = []): array|string
     {
         $ignoredAttributes = ['password', 'roles', 'salt', 'username'];
 
@@ -31,7 +31,7 @@ class UserNormalizer implements ContextAwareNormalizerInterface, CacheableSuppor
         return $this->normalizer->normalize($object, $format, $context);
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $data instanceof User;
     }

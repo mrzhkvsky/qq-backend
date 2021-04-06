@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\User\Entity;
 
 use App\Application\UserSecurityTrait;
+use App\Domain\Shared\ValueObject\Id;
 use App\Domain\User\Enum\GenderEnum;
 use App\Domain\User\Enum\RoleEnum;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,11 +20,9 @@ class User implements UserInterface
     use UserSecurityTrait;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
+     * @ORM\Embedded(class="App\Domain\Shared\ValueObject\Id")
      */
-    private int $id;
+    private ?Id $id;
 
     /**
      * @ORM\Column(type="string")
@@ -64,7 +63,7 @@ class User implements UserInterface
             ->setRole(RoleEnum::USER());
     }
 
-    public function getId(): int
+    public function getId(): ?Id
     {
         return $this->id;
     }
@@ -134,14 +133,6 @@ class User implements UserInterface
     private function changeRole(RoleEnum $role): User
     {
         return $this->setRole($role);
-    }
-
-    private function setId(string $id): User
-    {
-        Assert::uuid($id);
-        $this->id = $id;
-
-        return $this;
     }
 
     private function setEmail(string $email): User

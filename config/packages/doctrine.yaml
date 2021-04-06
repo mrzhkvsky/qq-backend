@@ -2,7 +2,6 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         types:
-            enum: App\Infrastructure\Doctrine\Type\PhpEnumType
             gender_enum: App\Infrastructure\Doctrine\Type\GenderEnumType
             role_enum: App\Infrastructure\Doctrine\Type\RoleEnumType
 
@@ -14,6 +13,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
+            Shared:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Domain/Shared/ValueObject'
+                prefix: 'App\Domain\Shared\ValueObject'
+                alias: App
             User:
                 is_bundle: false
                 type: annotation

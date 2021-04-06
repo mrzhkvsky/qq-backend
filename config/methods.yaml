@@ -1,2 +1,2 @@
 services:
-    'account.get_profile_info': { alias: App\Application\Method\Account\GetProfileInfoMethod, public: true }
+    'account.getProfileInfo': { alias: App\Application\Method\Account\GetProfileInfoMethod, public: true }

@@ -8,6 +8,6 @@ login:
     methods: POST
 
 method:
-    path:       /api/method/{methodName}
-    controller: App\Application\ApiController::method
+    path:       /api/rpc
+    controller: App\Application\RpcController::call
     methods: [GET, POST]

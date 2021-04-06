@@ -3,22 +3,25 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Rpc\Exception;
 
+use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
 class RpcInvalidParamsException extends RpcException
 {
-    private array $violationList;
+    private ConstraintViolationListInterface $violationList;
 
-    public function __construct(array $violationList)
+    #[Pure]
+    public function __construct(ConstraintViolationListInterface $violationList)
     {
         $this->violationList = $violationList;
 
         parent::__construct(
             self::INVALID_PARAMS,
-            'Invalid params',
-            $violationList
+            'Invalid params'
         );
     }
 
-    public function getViolationList(): array
+    public function getViolationList(): ConstraintViolationListInterface
     {
         return $this->violationList;
     }

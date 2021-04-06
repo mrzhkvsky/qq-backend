@@ -12,7 +12,7 @@ class PhpEnumType extends Type
     protected string $name = 'enum';
     protected string $enumClass = Enum::class;
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): object
     {
         return new $this->enumClass($value);
     }

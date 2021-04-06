@@ -5,34 +5,27 @@ namespace App\Application\Method;
 
 use App\Application\Data\InvalidParam;
 use App\Domain\User\Entity\User;
-use App\Infrastructure\Rpc\RpcResult;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractMethod
 {
-    protected ContainerInterface $container;
+    private ContainerInterface $container;
 
-    abstract public function exec(array $data): RpcResult;
-
-    /**
-     * @internal
-     * @required
-     */
+    #[Required]
     public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }
 
     /**
-     * @param mixed $data
      * @param Constraint|Constraint[] $constraints
      *
      * @return \App\Application\Data\InvalidParam[]
      */
-    protected function validate($data, $constraints): array
+    protected function validate(mixed $data, array|Constraint $constraints): array
     {
         /** @var ConstraintViolationListInterface $list */
         $list = $this->container->get('validator')->validate($data, $constraints);
@@ -54,7 +47,7 @@ abstract class AbstractMethod
         return $invalidParams;
     }
 
-    protected function isGranted($attribute, $subject = null): bool
+    protected function isGranted(mixed $attribute, mixed $subject = null): bool
     {
         return $this->container->get('security.authorization_checker')
             ->isGranted($attribute, $subject);
@@ -69,14 +62,5 @@ abstract class AbstractMethod
         }
 
         return $token->getUser();
-    }
-
-    protected function serialize(RpcResult $result, array $includedAttributes = null, array $ignoredAttributes = null): string
-    {
-
-        return $this->container->get('serializer')->serialize($result->getResult(), 'json', [
-            AbstractNormalizer::ATTRIBUTES => $includedAttributes,
-            AbstractNormalizer::IGNORED_ATTRIBUTES => $ignoredAttributes
-        ]);
     }
 }

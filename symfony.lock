@@ -1,7 +1,4 @@
 {
-    "acelaya/doctrine-enum-type": {
-        "version": "v2.5.0"
-    },
     "brick/math": {
         "version": "0.9.2"
     },
